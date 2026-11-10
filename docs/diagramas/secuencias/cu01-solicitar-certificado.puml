@@ -5,6 +5,14 @@ skinparam defaultFontName Arial
 skinparam defaultFontColor white
 skinparam titleFontColor white
 skinparam shadowing false
+skinparam ParticipantPadding 25
+skinparam BoxPadding 10
+skinparam wrapWidth 230
+skinparam maxMessageSize 230
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign left
+skinparam NoteTextAlignment left
+skinparam SequenceGroupBodyBackgroundColor transparent
 skinparam ArrowColor white
 skinparam ArrowFontColor white
 skinparam sequence {
@@ -57,5 +65,5 @@ API -> DB : registra Solicitud y auditoría (SQL)
 API ->> Broker : publica SolicitudFirma (AMQP)
 API --> Web : 202 Aceptada con código de verificación
 Web --> Estudiante : "solicitud recibida"
-note over Estudiante, API : Menos de 3 s en el 95% de los casos: cumple EAC-01.\nLa API nunca espera al proveedor de firma (ADR-001).
+note across : Menos de 3 s en el 95% de los casos: cumple EAC-01.\nLa API nunca espera al proveedor de firma (ADR-001).
 @enduml

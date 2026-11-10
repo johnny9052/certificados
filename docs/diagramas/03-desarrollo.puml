@@ -1,6 +1,9 @@
 @startuml desarrollo
 !include <C4/C4_Component>
 LAYOUT_WITH_LEGEND()
+skinparam linetype polyline
+skinparam nodesep 50
+skinparam ranksep 80
 title Vista de desarrollo: componentes de la API de certificados (C4 nivel 3)
 
 Container(web, "Aplicación web", "Angular", "Interfaz del estudiante y el funcionario")
@@ -10,40 +13,48 @@ System_Ext(sia, "SIA", "Notas y paz y salvo")
 System_Ext(pagos, "Pasarela de pagos", "Cobra el trámite")
 
 Container_Boundary(api, "API de certificados (monolito modular, ADR-002)") {
-  Component(token, "Validador de token", "Adaptador de entrada", "Valida el token y entrega la identidad (ADR-004)")
   Component(ctrl, "Controlador REST", "Adaptador de entrada", "Traduce HTTP a casos de uso y errores a respuestas (ADR-006)")
+  Component(token, "Validador de token", "Adaptador de entrada", "Valida el token y entrega la identidad (ADR-004)")
 
+  Component(rev, "Módulo Revisión", "Caso de uso", "CU-08 gestión del funcionario")
   Component(sol, "Módulo Solicitudes", "Caso de uso", "CU-01 solicitar certificado")
   Component(pag, "Módulo Pagos", "Caso de uso", "CU-02 pagar el trámite")
-  Component(rev, "Módulo Revisión", "Caso de uso", "CU-08 gestión del funcionario")
 
   Component(asia, "Adaptador SIA", "Adaptador", "Implementa ConsultaAcademica")
   Component(pub, "Publicador", "Adaptador", "Implementa PublicadorFirmas")
-  Component(apag, "Adaptador de pagos", "Adaptador", "Implementa PasarelaPagos")
-  Component(apg, "Adaptador PostgreSQL", "Adaptador", "Implementa RepositorioCertificados")
   Component(abit, "Adaptador de bitácora", "Adaptador", "Implementa Bitácora (ADR-005)")
+  Component(apg, "Adaptador PostgreSQL", "Adaptador", "Implementa RepositorioCertificados")
+  Component(apag, "Adaptador de pagos", "Adaptador", "Implementa PasarelaPagos")
 }
 
-Rel(web, ctrl, "invoca", "JSON / HTTPS")
-Rel(ctrl, token, "valida identidad")
-Rel(ctrl, sol, "invoca")
-Rel(ctrl, pag, "invoca")
-Rel(ctrl, rev, "invoca")
+Lay_R(sia, broker)
+Lay_R(broker, db)
+Lay_R(db, pagos)
+Lay_R(asia, pub)
+Lay_R(pub, abit)
+Lay_R(abit, apg)
+Lay_R(apg, apag)
 
-Rel(sol, pag, "verifica el pago")
-Rel(rev, sol, "cambia el estado")
+Rel_D(web, ctrl, "invoca", "JSON / HTTPS")
+Rel_R(ctrl, token, "valida identidad")
+Rel_D(ctrl, rev, "invoca")
+Rel_D(ctrl, sol, "invoca")
+Rel_D(ctrl, pag, "invoca")
 
-Rel(sol, asia, "consulta paz y salvo", "puerto ConsultaAcademica")
-Rel(sol, pub, "publica", "puerto PublicadorFirmas")
-Rel(sol, apg, "guarda", "puerto RepositorioCertificados")
-Rel(pag, apag, "cobra", "puerto PasarelaPagos")
-Rel(pag, apg, "guarda", "puerto RepositorioCertificados")
-Rel(rev, apg, "consulta y actualiza", "puerto RepositorioCertificados")
-Rel(sol, abit, "audita", "puerto Bitácora")
+Rel_R(rev, sol, "cambia el estado")
+Rel_R(sol, pag, "verifica el pago")
 
-Rel(asia, sia, "consulta", "HTTPS")
-Rel(pub, broker, "publica", "AMQP")
-Rel(apag, pagos, "cobra", "HTTPS")
-Rel(apg, db, "lee y escribe", "SQL")
-Rel(abit, db, "escribe auditoría", "SQL")
+Rel_D(sol, asia, "consulta paz y salvo", "puerto ConsultaAcademica")
+Rel_D(sol, pub, "publica", "puerto PublicadorFirmas")
+Rel_D(sol, abit, "audita", "puerto Bitácora")
+Rel_D(sol, apg, "guarda", "puerto RepositorioCertificados")
+Rel_D(pag, apag, "cobra", "puerto PasarelaPagos")
+Rel_D(rev, apg, "consulta y actualiza", "puerto RepositorioCertificados")
+Rel_D(pag, apg, "guarda", "puerto RepositorioCertificados")
+
+Rel_D(asia, sia, "consulta", "HTTPS")
+Rel_D(pub, broker, "publica", "AMQP")
+Rel_D(abit, db, "escribe auditoría", "SQL")
+Rel_D(apg, db, "lee y escribe", "SQL")
+Rel_D(apag, pagos, "cobra", "HTTPS")
 @enduml

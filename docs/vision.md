@@ -79,6 +79,7 @@ Nota: RT-01, RT-02, RT-03, RN-01 y RN-02 son las restricciones usadas en las dem
 | S-05 | Qué tipos de certificado existen al inicio | Certificado de notas, de matrícula y de egresado | Registro Académico |
 | S-06 | Cómo se paga | La pasarela de pagos ofrece una URL de pago y notifica el resultado por HTTPS | Área de Sistemas |
 | S-07 | Cuánto tiempo se conservan los PDF | Se conservan en almacenamiento institucional según la política de retención vigente | Área jurídica |
+| S-08 | Qué pasa al reprocesar manualmente una solicitud de la cola de errores | Se inicia un nuevo ciclo de hasta 5 intentos de firma (complemento) | Funcionario de Registro |
 
 ### Riesgos
 

@@ -1,6 +1,9 @@
 @startuml contexto
 !include <C4/C4_Context>
 LAYOUT_WITH_LEGEND()
+skinparam linetype polyline
+skinparam nodesep 60
+skinparam ranksep 80
 title Contexto del sistema de certificados (C4 nivel 1)
 
 Person(estudiante, "Estudiante o egresado", "Solicita, paga y descarga certificados")
@@ -13,10 +16,15 @@ System_Ext(pagos, "Pasarela de pagos", "Cobra el trámite")
 System_Ext(firma, "Proveedor de firma", "Firma el PDF (RT-03)")
 System_Ext(correo, "Servicio de correo", "Envía notificaciones")
 
-Rel(estudiante, sistema, "Solicita, paga y descarga", "HTTPS")
-Rel(funcionario, sistema, "Revisa solicitudes con novedades", "HTTPS")
-Rel(sistema, sia, "Consulta notas y paz y salvo", "API REST, HTTPS")
-Rel(sistema, pagos, "Cobra el trámite", "HTTPS")
-Rel(sistema, firma, "Firma documentos", "HTTPS")
-Rel(sistema, correo, "Notifica", "SMTP")
+Lay_R(estudiante, funcionario)
+Lay_R(sia, pagos)
+Lay_R(pagos, firma)
+Lay_R(firma, correo)
+
+Rel_D(estudiante, sistema, "Solicita, paga y descarga", "HTTPS")
+Rel_D(funcionario, sistema, "Revisa solicitudes con novedades", "HTTPS")
+Rel_D(sistema, sia, "Consulta notas y paz y salvo", "API REST, HTTPS")
+Rel_D(sistema, pagos, "Cobra el trámite", "HTTPS")
+Rel_D(sistema, firma, "Firma documentos", "HTTPS")
+Rel_D(sistema, correo, "Notifica", "SMTP")
 @enduml

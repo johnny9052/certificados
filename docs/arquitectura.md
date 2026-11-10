@@ -59,10 +59,10 @@ Ninguna fila vacía: todo driver y todo ADR se ven en al menos una vista.
 | RT-03: proveedor de firma externo | ✓ | | ✓ | | |
 | RT-04: SIA solo por API REST | ✓ | | | ✓ | |
 | RN-01: 4 personas, 16 semanas | | | ✓ | ✓ | |
-| RN-02: datos dentro del país | | | | | ✓ |
+| RN-02: datos dentro del país | | | ✓ | | ✓ |
 | ADR-001 Firma asíncrona | | ✓ | ✓ | | ✓ |
 | ADR-002 Estructura general | | | ✓ | ✓ | |
-| ADR-003 Persistencia | | | ✓ | ✓ | ✓ |
+| ADR-003 Persistencia | | | ✓ | | ✓ |
 | ADR-004 Autenticación y autorización | ✓ | | ✓ | ✓ | |
 | ADR-005 Registro y trazabilidad | | ✓ | | ✓ | |
 | ADR-006 Manejo de errores | | | | ✓ | |
@@ -105,12 +105,12 @@ Los ADR-001 a ADR-003 corresponden al ejemplo visto en clase; los ADR-004 a ADR-
 | EAC | Atributo | Prioridad | ADR | Se verifica en |
 |-----|----------|-----------|-----|----------------|
 | EAC-01 | Desempeño | Alta | ADR-001 | [specs/001](../specs/001-solicitar-certificado/spec.md), escenario 2 |
-| EAC-02 | Fiabilidad | Alta | ADR-001, ADR-006 | specs/003 (firmar digitalmente), pendiente de crear |
+| EAC-02 | Fiabilidad | Alta | ADR-001, ADR-006 | [specs/003](../specs/003-firmar-digitalmente/spec.md), escenarios de reintentos y cola de errores |
 | EAC-03 | Mantenibilidad | Alta | ADR-002, ADR-007 | Revisión del cambio al agregar un tipo (cuenta de módulos tocados) |
-| EAC-04 | Seguridad | Alta | ADR-004, ADR-005 | specs/001, escenario 5 |
+| EAC-04 | Seguridad | Alta | ADR-004, ADR-005 | [specs/001](../specs/001-solicitar-certificado/spec.md), escenario 5; también specs 004 a 008 |
 | EAC-05 | Capacidad de interacción | Media | ADR-009 | Prueba de usuario con el 90% en menos de 2 minutos |
 
-Un EAC sin escenario en ninguna spec queda en evidencia: nadie lo está verificando. Hoy EAC-02 depende de la spec 003 y EAC-03 y EAC-05 de verificaciones fuera de las specs.
+Un EAC sin escenario en ninguna spec queda en evidencia: nadie lo está verificando. Las specs 001 a 008 cubren EAC-01, EAC-02 y EAC-04 (una por caso de uso, ver [README](../README.md)); EAC-03 y EAC-05 de verificaciones fuera de las specs.
 
 ## 9. Riesgos y deuda técnica
 
@@ -123,6 +123,7 @@ Un EAC sin escenario en ninguna spec queda en evidencia: nadie lo está verifica
 | DT-01 | Las solicitudes que agotan los 5 intentos pasan a la cola de errores y dependen del Funcionario de Registro | Secuencia de la firma: cola de errores | En temporada de grados, el Funcionario de Registro se satura | Se acepta en esta etapa; automatizar el reprocesamiento si la cola de errores crece |
 | DT-02 | Archivos PDF huérfanos si el worker falla entre guardar el PDF y actualizar la base | ADR-003 | Inconsistencia entre almacenes | Proceso periódico de conciliación (pendiente) |
 | DT-03 | El mecanismo de autenticación institucional es un supuesto (S-03) | ADR-004 | Posible rediseño de la entrada | Validar con el Administrador del SIA antes de implementar |
+| DT-04 | El reprocesamiento manual de la cola de errores (CU-08) inicia un nuevo ciclo de hasta 5 intentos, lo que se aparta del 0..5 intentos del modelo de dominio | Spec 008, supuesto S-08 | Registro no acepta el ciclo nuevo | Validar S-08 con Registro; si no se acepta, ADR que reemplace la regla |
 
 ## 10. Glosario
 

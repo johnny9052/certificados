@@ -1,6 +1,9 @@
 @startuml fisica
 !include <C4/C4_Deployment>
 LAYOUT_WITH_LEGEND()
+skinparam linetype polyline
+skinparam nodesep 60
+skinparam ranksep 80
 title Vista física: despliegue en el centro de datos de la Universidad de Caldas (RT-01)
 
 Deployment_Node(cd, "Centro de datos de la Universidad de Caldas", "RT-01, RN-02") {
@@ -22,20 +25,25 @@ Deployment_Node(cd, "Centro de datos de la Universidad de Caldas", "RT-01, RN-02
   }
 }
 
+System_Ext(sia, "SIA", "Sistema externo")
 System_Ext(pagos, "Pasarela de pagos", "Sistema externo")
 System_Ext(firma, "Proveedor de firma", "Sistema externo")
 System_Ext(correo, "Servicio de correo", "Sistema externo")
-System_Ext(sia, "SIA", "Sistema externo")
 
-Rel(app, api, "invoca", "JSON / HTTPS")
-Rel(api, broker, "publica", "AMQP, red interna")
-Rel(broker, worker, "entrega", "AMQP, red interna")
-Rel(api, db, "lee y escribe", "SQL, red interna")
-Rel(worker, db, "registra intentos y estado", "SQL, red interna")
-Rel(worker, pdf, "guarda PDF", "archivos")
-Rel(api, pdf, "lee PDF", "archivos")
-Rel(api, pagos, "cobra", "HTTPS")
-Rel(api, sia, "consulta", "HTTPS")
-Rel(worker, firma, "firma", "HTTPS")
-Rel(worker, correo, "notifica", "SMTP")
+Lay_R(api, worker)
+Lay_R(sia, pagos)
+Lay_R(pagos, firma)
+Lay_R(firma, correo)
+
+Rel_D(app, api, "invoca", "JSON / HTTPS")
+Rel_R(api, broker, "publica", "AMQP, red interna")
+Rel_D(broker, worker, "entrega", "AMQP, red interna")
+Rel_D(api, db, "lee y escribe", "SQL, red interna")
+Rel_D(worker, db, "registra intentos y estado", "SQL, red interna")
+Rel_D(api, pdf, "lee PDF", "archivos")
+Rel_D(worker, pdf, "guarda PDF", "archivos")
+Rel_D(api, sia, "consulta", "HTTPS")
+Rel_D(api, pagos, "cobra", "HTTPS")
+Rel_D(worker, firma, "firma", "HTTPS")
+Rel_D(worker, correo, "notifica", "SMTP")
 @enduml

@@ -13,11 +13,11 @@ Repositorio de referencia del caso de los certificados académicos firmados digi
 | 5 | [docs/diagramas/](docs/diagramas/) | Diagramas como código (PlantUML): vistas y secuencias arquitectónicas |
 | 6 | [docs/arquitectura.md](docs/arquitectura.md) | Documento de arquitectura: el mapa que enlaza todo |
 | 7 | [AGENTS.md](AGENTS.md) y [prompts/](prompts/) | SDD: reglas permanentes y una instrucción por fase |
-| 8 | [specs/001-solicitar-certificado/](specs/001-solicitar-certificado/) | SDD: spec, plan, tareas y validación del CU-01 |
+| 8 | [specs/](specs/) | SDD: una carpeta por caso de uso (001 a 008) con spec, plan, tareas y validación |
 
 ## Cadena de trazabilidad
 
-OB-01 a OB-05 (visión) → EAC y restricciones (drivers) → ADR-001 a ADR-009 → vistas y secuencias → arquitectura.md → spec 001 → tareas T-01 a T-22 → código en `src/` → validación.
+OB-01 a OB-05 (visión) → EAC y restricciones (drivers) → ADR-001 a ADR-009 → vistas y secuencias → arquitectura.md → specs 001 a 008 → tareas de cada spec → código en `src/` → validación.
 
 Cada eslabón cita al anterior por su ID.
 
@@ -36,7 +36,8 @@ certificados/
 │   ├── vistas/               01-logica, 02-procesos, 03-desarrollo, 04-fisica (.md)
 │   └── diagramas/            contexto, 01 a 04 (.puml) y secuencias/ (cu01, cu02, cu03)
 ├── specs/
-│   └── 001-solicitar-certificado/   spec.md, plan.md, tasks.md, validacion.md
+│   ├── 001-solicitar-certificado/   spec.md, plan.md, tasks.md, validacion.md
+│   ├── 002-pagar-tramite/ … 008-revisar-novedades/   misma estructura
 ├── prompts/                  mensaje-de-arranque.md y 1 a 5 (una por fase)
 └── src/                      vacía hasta la fase de implementación (.gitkeep)
 ```
@@ -51,10 +52,11 @@ Los diagramas son archivos `.puml` (PlantUML, texto versionable). Se pueden ver 
 |----------|--------|
 | Visión, drivers, ADR, contexto, vistas, secuencias y arquitectura.md | Completos |
 | AGENTS.md y prompts/ | Completos |
-| Spec, plan y tareas de la funcionalidad 001 | Completos |
-| Código en `src/` y `validacion.md` | Pendientes (fases 4 y 5 de SDD) |
+| Spec, plan y tareas de las funcionalidades 001 a 008 | Completos |
+| Validación de las specs 001 a 008 | Pendiente (se completa al implementar) |
+| Código en `src/` | Pendiente (fase 4 de SDD) |
 
 ## Notas para quien consulta
 
-- Los ADR-001 a ADR-003, los casos de uso CU-01 a CU-06, los EAC-01 y EAC-02 y las restricciones RT-01 a RT-03, RN-01 y RN-02 corresponden al ejemplo visto en clase. El resto (ADR-004 a ADR-009, EAC-03 a EAC-05, RT-04, RN-03, RN-04, CU-07, CU-08, PA y escenarios adicionales de la spec) completa la cobertura de los drivers y se marca como complemento en cada archivo.
+- Los ADR-001 a ADR-003, los casos de uso CU-01 a CU-06, los EAC-01 y EAC-02 y las restricciones RT-01 a RT-03, RN-01 y RN-02 corresponden al ejemplo visto en clase. El resto (ADR-004 a ADR-009, EAC-03 a EAC-05, RT-04, RN-03, RN-04, CU-07, CU-08, PA y las specs 002 a 008 completas, más escenarios adicionales de la spec 001) completa la cobertura de los drivers y se marca como complemento en cada archivo.
 - Este caso es distinto del proyecto de prácticas empresariales que cada equipo desarrolla por su cuenta.

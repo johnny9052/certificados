@@ -1,6 +1,9 @@
 @startuml procesos
 !include <C4/C4_Container>
 LAYOUT_WITH_LEGEND()
+skinparam linetype polyline
+skinparam nodesep 70
+skinparam ranksep 90
 title Vista de procesos: contenedores del sistema de certificados (C4 nivel 2)
 
 Person(estudiante, "Estudiante o egresado", "Solicita, paga y descarga certificados")
@@ -9,10 +12,10 @@ Person(funcionario, "Funcionario de Registro", "Revisa solicitudes con novedades
 System_Boundary(sistema, "Sistema de certificados") {
   Container(web, "Aplicación web", "Angular", "Interfaz del estudiante y el funcionario (ADR-009)")
   Container(api, "API de certificados", "Python, monolito modular", "Reglas del trámite (ADR-002)")
-  ContainerQueue(broker, "Broker de mensajes", "RabbitMQ", "Cola de firmas (ADR-001)")
-  Container(worker, "Worker de firma", "Python", "Firma y reintenta sin perder solicitudes")
   ContainerDb(db, "PostgreSQL", "Base de datos relacional, RT-02", "Solicitudes, pagos, intentos y estados")
   ContainerDb(pdf, "Repositorio de PDF", "Almacenamiento de archivos", "Certificados firmados (ADR-003)")
+  ContainerQueue(broker, "Broker de mensajes", "RabbitMQ", "Cola de firmas (ADR-001)")
+  Container(worker, "Worker de firma", "Python", "Firma y reintenta sin perder solicitudes")
 }
 
 System_Ext(sia, "SIA", "Notas y paz y salvo")
@@ -20,17 +23,26 @@ System_Ext(pagos, "Pasarela de pagos", "Cobra el trámite")
 System_Ext(firma, "Proveedor de firma", "Firma el PDF (RT-03)")
 System_Ext(correo, "Servicio de correo", "Envía notificaciones")
 
-Rel(estudiante, web, "usa", "HTTPS")
-Rel(funcionario, web, "revisa", "HTTPS")
-Rel(web, api, "invoca", "JSON / HTTPS")
-Rel(api, db, "lee y escribe", "SQL")
-Rel(api, broker, "publica SolicitudFirma", "AMQP")
-Rel(api, sia, "consulta", "API REST, HTTPS")
-Rel(api, pagos, "cobra", "HTTPS")
-Rel(api, pdf, "lee PDF", "sistema de archivos")
-Rel(broker, worker, "entrega", "AMQP")
-Rel(worker, firma, "firma", "HTTPS")
-Rel(worker, pdf, "guarda PDF", "sistema de archivos")
-Rel(worker, db, "registra intentos y estado", "SQL")
-Rel(worker, correo, "notifica", "SMTP")
+Lay_R(estudiante, funcionario)
+Lay_R(db, pdf)
+Lay_R(pdf, broker)
+Lay_D(sia, pagos)
+Lay_D(firma, correo)
+
+Rel_D(estudiante, web, "usa", "HTTPS")
+Rel_D(funcionario, web, "revisa", "HTTPS")
+Rel_D(web, api, "invoca", "JSON / HTTPS")
+
+Rel_R(api, sia, "consulta", "API REST, HTTPS")
+Rel_R(api, pagos, "cobra", "HTTPS")
+
+Rel_D(api, db, "lee y escribe", "SQL")
+Rel_D(api, pdf, "lee PDF", "sistema de archivos")
+Rel_D(api, broker, "publica SolicitudFirma", "AMQP")
+
+Rel_D(broker, worker, "entrega", "AMQP")
+Rel_L(worker, pdf, "guarda PDF", "sistema de archivos")
+Rel_L(worker, db, "registra intentos y estado", "SQL")
+Rel_R(worker, firma, "firma", "HTTPS")
+Rel_R(worker, correo, "notifica", "SMTP")
 @enduml

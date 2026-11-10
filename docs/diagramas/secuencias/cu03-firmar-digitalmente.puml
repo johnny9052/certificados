@@ -5,6 +5,14 @@ skinparam defaultFontName Arial
 skinparam defaultFontColor white
 skinparam titleFontColor white
 skinparam shadowing false
+skinparam ParticipantPadding 25
+skinparam BoxPadding 10
+skinparam wrapWidth 230
+skinparam maxMessageSize 230
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign left
+skinparam NoteTextAlignment left
+skinparam SequenceGroupBodyBackgroundColor transparent
 skinparam ArrowColor white
 skinparam ArrowFontColor white
 skinparam sequence {
@@ -43,7 +51,7 @@ API -> API : registra solicitud
 API ->> Broker : publica SolicitudFirma (AMQP)
 API --> Web : 202 Aceptada
 Web --> Estudiante : "solicitud recibida"
-note over Estudiante, API : Menos de 3 s: cumple EAC-01
+note across : Menos de 3 s: cumple EAC-01
 
 Broker ->> Worker : entrega SolicitudFirma (AMQP)
 Worker -> DB : marca la solicitud "en firma" (SQL)
@@ -66,7 +74,7 @@ end
 
 opt se agotaron los 5 intentos
   Worker ->> Broker : envía a la cola de errores
-  note right of Broker : Queda para revisión del Funcionario de Registro (DT-01).\nAlerta si la cola supera 200 elementos (R-01).
+  note across : Queda para revisión del Funcionario de Registro (DT-01).\nAlerta si la cola supera 200 elementos (R-01).
 end
-note over Worker, Firma : Ninguna solicitud se pierde: cumple EAC-02
+note across : Ninguna solicitud se pierde: cumple EAC-02
 @enduml

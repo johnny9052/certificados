@@ -6,6 +6,9 @@ skinparam defaultFontName Arial
 skinparam defaultFontColor white
 skinparam titleFontColor white
 skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 80
+skinparam ranksep 80
 skinparam ArrowColor white
 skinparam ArrowFontColor white
 skinparam class {
@@ -47,9 +50,11 @@ class IntentoFirma {
   resultado
 }
 
-Estudiante "1" -- "0..*" Solicitud
-Solicitud "0..*" -- "1" TipoCertificado
-Solicitud "1" -- "0..1" Pago
-Solicitud "1" -- "0..1" Certificado
-Solicitud "1" -- "0..5" IntentoFirma
+Estudiante "1" -right- "0..*" Solicitud
+Solicitud "0..*" -right- "1" TipoCertificado
+Solicitud "1" -down- "0..1" Pago
+Solicitud "1" -down- "0..1" Certificado
+Solicitud "1" -down- "0..5" IntentoFirma
+Pago -[hidden]right- Certificado
+Certificado -[hidden]right- IntentoFirma
 @enduml
