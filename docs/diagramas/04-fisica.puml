@@ -1,0 +1,41 @@
+@startuml fisica
+!include <C4/C4_Deployment>
+LAYOUT_WITH_LEGEND()
+title Vista física: despliegue en el centro de datos de la Universidad de Caldas (RT-01)
+
+Deployment_Node(cd, "Centro de datos de la Universidad de Caldas", "RT-01, RN-02") {
+  Deployment_Node(web, "Servidor web", "Ubuntu, Nginx") {
+    Container(app, "Aplicación web", "Angular, archivos estáticos", "Interfaz del estudiante y el funcionario")
+  }
+  Deployment_Node(apps, "Servidor de aplicaciones", "Docker") {
+    Container(api, "API de certificados", "Python", "Reglas del trámite")
+    Container(worker, "Worker de firma", "Python", "Firma y reintenta")
+  }
+  Deployment_Node(msg, "Servidor de mensajería") {
+    ContainerQueue(broker, "Broker de mensajes", "RabbitMQ", "Colas persistentes")
+  }
+  Deployment_Node(dbn, "Servidor de base de datos") {
+    ContainerDb(db, "PostgreSQL", "Contenedor", "Solo red interna")
+  }
+  Deployment_Node(alm, "Almacenamiento institucional") {
+    ContainerDb(pdf, "Repositorio de PDF", "Contenedor", "Certificados firmados")
+  }
+}
+
+System_Ext(pagos, "Pasarela de pagos", "Sistema externo")
+System_Ext(firma, "Proveedor de firma", "Sistema externo")
+System_Ext(correo, "Servicio de correo", "Sistema externo")
+System_Ext(sia, "SIA", "Sistema externo")
+
+Rel(app, api, "invoca", "JSON / HTTPS")
+Rel(api, broker, "publica", "AMQP, red interna")
+Rel(broker, worker, "entrega", "AMQP, red interna")
+Rel(api, db, "lee y escribe", "SQL, red interna")
+Rel(worker, db, "registra intentos y estado", "SQL, red interna")
+Rel(worker, pdf, "guarda PDF", "archivos")
+Rel(api, pdf, "lee PDF", "archivos")
+Rel(api, pagos, "cobra", "HTTPS")
+Rel(api, sia, "consulta", "HTTPS")
+Rel(worker, firma, "firma", "HTTPS")
+Rel(worker, correo, "notifica", "SMTP")
+@enduml

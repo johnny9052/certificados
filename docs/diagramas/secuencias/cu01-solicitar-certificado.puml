@@ -1,0 +1,61 @@
+@startuml cu01
+title ESC-01: CU-01 Solicitar certificado (cumple EAC-01, ADR-001)
+skinparam backgroundColor #17375E
+skinparam defaultFontName Arial
+skinparam defaultFontColor white
+skinparam titleFontColor white
+skinparam shadowing false
+skinparam ArrowColor white
+skinparam ArrowFontColor white
+skinparam sequence {
+  LifeLineBorderColor white
+  LifeLineBackgroundColor #4F81BD
+  ParticipantBackgroundColor #4F81BD
+  ParticipantBorderColor white
+  ParticipantFontColor white
+  ActorBackgroundColor #4F81BD
+  ActorBorderColor white
+  ActorFontColor white
+  GroupBackgroundColor #1F4E8C
+  GroupBorderColor white
+  GroupFontColor white
+  BoxBackgroundColor #1F4E8C
+}
+skinparam note {
+  BackgroundColor #FFF2CC
+  BorderColor #C00000
+  FontColor #C00000
+}
+
+actor Estudiante
+participant "Aplicación web" as Web
+participant "API de certificados" as API
+participant "SIA" as SIA
+participant "Pasarela de pagos" as Pagos
+participant "PostgreSQL" as DB
+participant "Broker de mensajes" as Broker
+
+Estudiante -> Web : solicitar certificado
+Web -> API : POST /solicitudes (JSON / HTTPS, token)
+API -> API : valida token y titularidad
+
+par consulta académica
+  API -> SIA : verificar paz y salvo y notas (HTTPS)
+  SIA --> API : datos académicos (1,2 s)
+else validación del pago, si el tipo lo requiere
+  API -> Pagos : consultar estado del pago (HTTPS)
+  Pagos --> API : pago aprobado (1,0 s)
+end
+
+break sin paz y salvo
+  API -> DB : registra rechazo en la bitácora (SQL)
+  API --> Web : 409 "solicitud rechazada" con la dependencia pendiente
+  Web --> Estudiante : muestra el motivo
+end
+
+API -> DB : registra Solicitud y auditoría (SQL)
+API ->> Broker : publica SolicitudFirma (AMQP)
+API --> Web : 202 Aceptada con código de verificación
+Web --> Estudiante : "solicitud recibida"
+note over Estudiante, API : Menos de 3 s en el 95% de los casos: cumple EAC-01.\nLa API nunca espera al proveedor de firma (ADR-001).
+@enduml

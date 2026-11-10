@@ -1,0 +1,22 @@
+@startuml contexto
+!include <C4/C4_Context>
+LAYOUT_WITH_LEGEND()
+title Contexto del sistema de certificados (C4 nivel 1)
+
+Person(estudiante, "Estudiante o egresado", "Solicita, paga y descarga certificados")
+Person(funcionario, "Funcionario de Registro", "Revisa solicitudes con novedades")
+
+System(sistema, "Sistema de certificados", "Emite certificados académicos firmados digitalmente")
+
+System_Ext(sia, "SIA", "Sistema de Información Académica: notas y paz y salvo")
+System_Ext(pagos, "Pasarela de pagos", "Cobra el trámite")
+System_Ext(firma, "Proveedor de firma", "Firma el PDF (RT-03)")
+System_Ext(correo, "Servicio de correo", "Envía notificaciones")
+
+Rel(estudiante, sistema, "Solicita, paga y descarga", "HTTPS")
+Rel(funcionario, sistema, "Revisa solicitudes con novedades", "HTTPS")
+Rel(sistema, sia, "Consulta notas y paz y salvo", "API REST, HTTPS")
+Rel(sistema, pagos, "Cobra el trámite", "HTTPS")
+Rel(sistema, firma, "Firma documentos", "HTTPS")
+Rel(sistema, correo, "Notifica", "SMTP")
+@enduml

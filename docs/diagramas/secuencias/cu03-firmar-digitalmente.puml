@@ -1,0 +1,72 @@
+@startuml cu03
+title ESC-03: CU-03 Firmar digitalmente (cumple EAC-02, RT-03, ADR-001)
+skinparam backgroundColor #17375E
+skinparam defaultFontName Arial
+skinparam defaultFontColor white
+skinparam titleFontColor white
+skinparam shadowing false
+skinparam ArrowColor white
+skinparam ArrowFontColor white
+skinparam sequence {
+  LifeLineBorderColor white
+  LifeLineBackgroundColor #4F81BD
+  ParticipantBackgroundColor #4F81BD
+  ParticipantBorderColor white
+  ParticipantFontColor white
+  ActorBackgroundColor #4F81BD
+  ActorBorderColor white
+  ActorFontColor white
+  GroupBackgroundColor #1F4E8C
+  GroupBorderColor white
+  GroupFontColor white
+  BoxBackgroundColor #1F4E8C
+}
+skinparam note {
+  BackgroundColor #FFF2CC
+  BorderColor #C00000
+  FontColor #C00000
+}
+
+actor Estudiante
+participant "Aplicación web" as Web
+participant "API de certificados" as API
+participant "Broker de mensajes" as Broker
+participant "Worker de firma" as Worker
+participant "Proveedor de firma" as Firma
+participant "Repositorio de PDF" as PDF
+participant "PostgreSQL" as DB
+participant "Servicio de correo" as Correo
+
+Estudiante -> Web : solicitar certificado
+Web -> API : POST /solicitudes (JSON / HTTPS)
+API -> API : registra solicitud
+API ->> Broker : publica SolicitudFirma (AMQP)
+API --> Web : 202 Aceptada
+Web --> Estudiante : "solicitud recibida"
+note over Estudiante, API : Menos de 3 s: cumple EAC-01
+
+Broker ->> Worker : entrega SolicitudFirma (AMQP)
+Worker -> DB : marca la solicitud "en firma" (SQL)
+
+loop máx. 5 intentos y sin firma
+  Worker -> Firma : firmar(pdf) [máx. 10 s] (HTTPS)
+  alt responde en 10 s
+    Firma --> Worker : pdf firmado
+    Worker -> PDF : guarda el PDF firmado
+    Worker -> DB : registra IntentoFirma exitoso y marca "emitida" (SQL)
+    opt el estudiante autorizó el correo
+      Worker -> Correo : enviar notificación "certificado listo" (SMTP)
+      Correo ->> Estudiante : "su certificado está listo"
+    end
+  else no responde en 10 s o responde con error
+    Worker -> DB : registra IntentoFirma fallido (SQL)
+    Worker ->> Broker : reencola con espera 2, 4, 8, 16 s
+  end
+end
+
+opt se agotaron los 5 intentos
+  Worker ->> Broker : envía a la cola de errores
+  note right of Broker : Queda para revisión del Funcionario de Registro (DT-01).\nAlerta si la cola supera 200 elementos (R-01).
+end
+note over Worker, Firma : Ninguna solicitud se pierde: cumple EAC-02
+@enduml

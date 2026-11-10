@@ -1,0 +1,55 @@
+@startuml cu02
+title ESC-02: CU-02 Pagar el trámite (integración con la pasarela de pagos)
+skinparam backgroundColor #17375E
+skinparam defaultFontName Arial
+skinparam defaultFontColor white
+skinparam titleFontColor white
+skinparam shadowing false
+skinparam ArrowColor white
+skinparam ArrowFontColor white
+skinparam sequence {
+  LifeLineBorderColor white
+  LifeLineBackgroundColor #4F81BD
+  ParticipantBackgroundColor #4F81BD
+  ParticipantBorderColor white
+  ParticipantFontColor white
+  ActorBackgroundColor #4F81BD
+  ActorBorderColor white
+  ActorFontColor white
+  GroupBackgroundColor #1F4E8C
+  GroupBorderColor white
+  GroupFontColor white
+  BoxBackgroundColor #1F4E8C
+}
+skinparam note {
+  BackgroundColor #FFF2CC
+  BorderColor #C00000
+  FontColor #C00000
+}
+
+actor Estudiante
+participant "Aplicación web" as Web
+participant "API de certificados" as API
+participant "PostgreSQL" as DB
+participant "Pasarela de pagos" as Pagos
+
+Estudiante -> Web : pagar el trámite
+Web -> API : POST /pagos (JSON / HTTPS, token)
+API -> DB : registra pago "pendiente" (SQL)
+API -> Pagos : crear transacción (HTTPS)
+Pagos --> API : URL de pago
+API --> Web : 201 URL de pago
+Web --> Estudiante : redirige a la pasarela
+
+Estudiante -> Pagos : paga en la pasarela (fuera del sistema)
+Pagos ->> API : notifica el resultado (HTTPS)
+
+alt pago aprobado
+  API -> DB : marca el pago "aprobado" (SQL)
+else pago rechazado
+  API -> DB : marca el pago "rechazado" (SQL)
+end
+
+API --> Pagos : 200 recibido
+note over API, Pagos : Con el pago aprobado, CU-01 puede validar el trámite.\nUn pago rechazado no crea solicitud y el estudiante puede intentarlo de nuevo.
+@enduml
