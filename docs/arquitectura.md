@@ -10,6 +10,8 @@ El sistema permite que un estudiante o egresado de la Universidad de Caldas soli
 
 Detalle: [Visión](vision.md)
 
+Funcionalidades: [catálogo de casos de uso](drivers.md#1-casos-de-uso-y-casos-de-uso-primarios) (CU-01 a CU-08), cada uno enlazado a su carpeta de `specs/`.
+
 ## 2. Restricciones
 
 Ocho restricciones: infraestructura institucional (RT-01), PostgreSQL (RT-02), proveedor de firma externo (RT-03), SIA solo por API REST (RT-04), equipo de 4 personas y 16 semanas (RN-01), datos dentro del país (RN-02), sin licencias comerciales (RN-03) y equipo que domina Python y Angular (RN-04).

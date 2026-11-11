@@ -5,7 +5,8 @@ Reglas permanentes del proyecto. Se le entregan al agente al inicio de cada sesi
 ## Fuentes de verdad
 
 - `docs/arquitectura.md`: mapa de visión, drivers, ADR, vistas y glosario.
-- `specs/`: una carpeta por funcionalidad (`spec.md`, `plan.md`, `tasks.md`, `validacion.md`).
+- `docs/drivers.md`, sección 1: catálogo de casos de uso. Es la lista de funcionalidades del sistema.
+- `specs/`: una carpeta por caso de uso del catálogo, con el mismo número (CU-03 → `specs/003-...`), con `spec.md`, `plan.md`, `tasks.md` y `validacion.md`. La columna "Se especifica en" del catálogo enlaza cada caso de uso con su carpeta.
 - Si el código contradice una especificación, gana la especificación. Si la especificación parece incorrecta, detenerse y preguntar.
 - Los ADR no se editan: una decisión nueva se escribe como ADR nuevo que reemplaza al anterior.
 
@@ -32,6 +33,6 @@ Reglas permanentes del proyecto. Se le entregan al agente al inicio de cada sesi
 
 - Una tarea de `tasks.md` a la vez.
 - Al terminar: marcar la tarea, listar los archivos cambiados y detenerse.
-- No inventar requisitos: lo que no esté en `spec.md` se pregunta.
+- No inventar requisitos: lo que no esté en los documentos se marca en `spec.md` con `# [NECESITA ACLARACIÓN: <pregunta>]` o se pregunta.
 - No agregar librerías que ningún ADR haya aprobado.
 - Un commit por tarea, con el ID de la tarea en el mensaje.

@@ -17,7 +17,7 @@ Repositorio de referencia del caso de los certificados académicos firmados digi
 
 ## Cadena de trazabilidad
 
-OB-01 a OB-05 (visión) → EAC y restricciones (drivers) → ADR-001 a ADR-009 → vistas y secuencias → arquitectura.md → specs 001 a 008 → tareas de cada spec → código en `src/` → validación.
+OB-01 a OB-05 (visión) → EAC y restricciones (drivers) → ADR-001 a ADR-009 → vistas y secuencias → arquitectura.md → CU-01 a CU-08 (catálogo de drivers.md, columna "Se especifica en") → specs 001 a 008 → tareas de cada spec → código en `src/` → validación.
 
 Cada eslabón cita al anterior por su ID.
 
@@ -38,7 +38,7 @@ certificados/
 ├── specs/
 │   ├── 001-solicitar-certificado/   spec.md, plan.md, tasks.md, validacion.md
 │   ├── 002-pagar-tramite/ … 008-revisar-novedades/   misma estructura
-├── prompts/                  mensaje-de-arranque.md y 1 a 5 (una por fase)
+├── prompts/                  0-arranque.md y 1 a 5 (una por fase)
 └── src/                      vacía hasta la fase de implementación (.gitkeep)
 ```
 

@@ -4,16 +4,18 @@
 
 ## 1. Casos de uso y casos de uso primarios
 
-| ID | Caso de uso | Actor | ¿Primario? | Justificación |
-|----|-------------|-------|------------|---------------|
-| **CU-01** | Solicitar certificado | Estudiante o egresado | Sí | Importancia para el negocio (razón de ser del sistema) y alta frecuencia; ligado a EAC-01 |
-| **CU-02** | Pagar el trámite | Estudiante o egresado | Sí | Complejidad e integración externa (pasarela de pagos) con riesgo técnico |
-| **CU-03** | Firmar digitalmente | Sistema (worker de firma) | Sí | Complejidad y dependencia de un proveedor externo lento e inestable (RT-03); ligado a EAC-02 |
-| **CU-04** | Consultar estado de la solicitud | Estudiante o egresado | No | Simple; consulta datos que ya están en el sistema |
-| **CU-05** | Actualizar perfil | Estudiante o egresado | No | CRUD estándar |
-| **CU-06** | Generar reporte mensual | Funcionario de Registro | No | Importante para el negocio, pero no estructura nada: opera sobre datos ya estructurados |
-| **CU-07** | Descargar certificado firmado | Estudiante o egresado | No | Lectura de un archivo ya almacenado; la seguridad se cubre con EAC-04 |
-| **CU-08** | Revisar solicitudes con novedades | Funcionario de Registro | No | Flujo de gestión sin complejidad técnica propia |
+| ID | Caso de uso | Actor | ¿Primario? | Justificación | Se especifica en |
+|----|-------------|-------|------------|---------------|------------------|
+| **CU-01** | Solicitar certificado | Estudiante o egresado | Sí | Importancia para el negocio (razón de ser del sistema) y alta frecuencia; ligado a EAC-01 | [specs/001](../specs/001-solicitar-certificado/spec.md) |
+| **CU-02** | Pagar el trámite | Estudiante o egresado | Sí | Complejidad e integración externa (pasarela de pagos) con riesgo técnico | [specs/002](../specs/002-pagar-tramite/spec.md) |
+| **CU-03** | Firmar digitalmente | Sistema (worker de firma) | Sí | Complejidad y dependencia de un proveedor externo lento e inestable (RT-03); ligado a EAC-02 | [specs/003](../specs/003-firmar-digitalmente/spec.md) |
+| **CU-04** | Consultar estado de la solicitud | Estudiante o egresado | No | Simple; consulta datos que ya están en el sistema | [specs/004](../specs/004-consultar-estado/spec.md) |
+| **CU-05** | Actualizar perfil | Estudiante o egresado | No | CRUD estándar | [specs/005](../specs/005-actualizar-perfil/spec.md) |
+| **CU-06** | Generar reporte mensual | Funcionario de Registro | No | Importante para el negocio, pero no estructura nada: opera sobre datos ya estructurados | [specs/006](../specs/006-generar-reporte-mensual/spec.md) |
+| **CU-07** | Descargar certificado firmado | Estudiante o egresado | No | Lectura de un archivo ya almacenado; la seguridad se cubre con EAC-04 | [specs/007](../specs/007-descargar-certificado/spec.md) |
+| **CU-08** | Revisar solicitudes con novedades | Funcionario de Registro | No | Flujo de gestión sin complejidad técnica propia | [specs/008](../specs/008-revisar-novedades/spec.md) |
+
+Este catálogo es la lista de funcionalidades del sistema. Cada caso de uso se especifica en la carpeta de `specs/` con su mismo número (CU-03 → `specs/003-...`); un caso de uso sin enlace en "Se especifica en" es una funcionalidad que nadie ha especificado.
 
 Nota: CU-01 a CU-06 son los casos del ejemplo visto en clase; CU-07 y CU-08 completan los flujos de la descarga y del Funcionario de Registro que las vistas ya mencionan.
 

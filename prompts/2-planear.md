@@ -13,6 +13,7 @@ Produce `plan.md` con estas secciones:
 ```
 
 Reglas:
+- Si `spec.md` todavía tiene marcas `[NECESITA ACLARACIÓN]`, no planear: avisar y detenerse.
 - El plan no rehace la arquitectura: la aterriza en la funcionalidad.
 - No inventar componentes que no estén en las vistas.
 - Si el plan necesita una decisión que no existe, detenerse: primero se escribe el ADR.
