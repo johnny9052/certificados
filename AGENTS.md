@@ -13,6 +13,7 @@ Reglas permanentes del proyecto. Se le entregan al agente al inicio de cada sesi
 ## Arquitectura
 
 - Monolito modular (ADR-002), con Clean Architecture por dentro.
+- Todo el codigo va en la carpeta `src/` 
 - `dominio/` no importa nada de `aplicacion/` ni de `infraestructura/`.
 - Puertos como `Protocol` en `aplicacion/puertos/` (los define el caso de uso; los implementa `infraestructura/`).
 - La firma es asíncrona (ADR-001): la API solo encola; nunca llama al proveedor de firma. Solo el worker lo hace.
